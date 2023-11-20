@@ -1,0 +1,38 @@
+<div class="text-center">test</div>
+<ng-container *ngIf="vm$ | async as vm">
+    
+    <div *ngIf="vm.loading; else ResultContent" class="text-center">
+        Loading...
+    </div>
+    <ng-template #ResultContent>
+
+        <div class="p-10 w-2/3 mx-auto">
+            <div class="pb-3">
+                <!-- <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last name</label> -->
+                <input type="text" id="query" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="enter the form name to search..."  [value]="vm.query" (change)="didChangeQuery($event)" >
+            </div>
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead>
+                    <tr>
+                        <th scope="col">name</th>
+                        <th scope="col">Exists in Dest</th>
+                        <th scope="col">Different</th>
+                        <th scope="col">src active</th>
+                        <th scope="col">dst active</th>
+                        <th scope="col">action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of vm.result"  class="bg-white hover:bg-gray-100 border-b cursor-pointer dark:bg-gray-800 dark:border-gray-700" [ngClass]="{'bg-red-200 color-white': item.src.config === item.dest?.config}">
+                        <td>{{item.src?.name}}</td>
+                        <td [ngClass]="{'bg-red-500 text-white': !item.dest}">{{!!item.dest ? 'Exists' : 'Not Exists'}}</td>
+                        <td [ngClass]="{'bg-orange-500 text-white': item.dest?.config!==item.src.config}">{{(item.dest?.config===item.src.config && !!item.dest) ? 'Same' : 'Different'}}</td>
+                        <td>{{item.src?.active}}</td>
+                        <td>{{item.dest?.active}}</td>
+                        <td><button type="button" (click)="didButtonClick(item)"> -> </button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </ng-template>
+</ng-container>
