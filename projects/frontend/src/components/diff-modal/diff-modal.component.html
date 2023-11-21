@@ -1,0 +1,10 @@
+<h1 class="text-6xl">{{data.name}}</h1>
+<div class="flex w-full gap-5 h-1/2 p-5">
+    <div class="flex-1 overflow-auto">
+        <pre>{{data.leftLines}}</pre>
+    </div>
+    <div class="flex-1 overflow-auto">
+        <pre>{{data.rightLines}}</pre>
+    </div>
+</div>
+<div class="p-5" [innerHTML]="diffHtml"></div>
