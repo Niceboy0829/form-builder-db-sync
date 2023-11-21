@@ -2,7 +2,7 @@ import { ComponentStore, tapResponse } from '@ngrx/component-store';
 import { Injectable } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
 import { switchMap, tap } from 'rxjs';
-
+import { API_BASE_URI } from '../../config'
 
 export interface FormLayout {
     id: string
@@ -23,16 +23,17 @@ export interface FormLayout {
 export interface DbCompareListState {
     loading: boolean,
     query: string,
+    showOnlyDiff: boolean,
     sourceData: FormLayout[],
     destData: FormLayout[],
 }
 
 @Injectable()
 export class DbCompareListStore extends ComponentStore<DbCompareListState> {
-    sourceDataUrl = 'http://localhost:3000/api/source-data';
-    destDataUrl = 'http://localhost:3000/api/dest-data';
+    sourceDataUrl = `${API_BASE_URI}/source-data`;
+    destDataUrl = `${API_BASE_URI}/dest-data`;
 
-    destUpdateUrl = 'http://localhost:3000/api/update-dest-data';
+    destUpdateUrl = `${API_BASE_URI}/update-dest-data`;
 
     constructor(
         private http: HttpClient
@@ -40,6 +41,7 @@ export class DbCompareListStore extends ComponentStore<DbCompareListState> {
         super({
             query: '',
             loading: false,
+            showOnlyDiff: false,
             sourceData: [],
             destData: [],
         })
@@ -52,18 +54,34 @@ export class DbCompareListStore extends ComponentStore<DbCompareListState> {
     sourceData$ = this.select(s => s.sourceData)
     destData$ = this.select(s => s.destData)
     query$ = this.select(s => s.query);
+    showOnlyDiff$ = this.select(s => s.showOnlyDiff);
 
-    result$ = this.select(this.sourceData$, this.destData$, this.query$, (sourceData, destData, query) => {
+    result$ = this.select(this.sourceData$, this.destData$, this.query$, this.showOnlyDiff$, (sourceData, destData, query, showOnlyDiff) => {
         let result: any[] = []
+        let diffCnt = 0;
         sourceData.filter(src=>src.name?.includes(query)).forEach(src => {
             const dest = destData.find(d => d.name === src.name);
-            result.push({
-                name: src.name,
-                src,
-                dest,
-            })
+            if(src.config !== dest?.config) {
+                diffCnt ++
+            }
+            if(showOnlyDiff && src.config !== dest?.config) {
+                result.push({
+                    name: src.name,
+                    src,
+                    dest,
+                })
+            } else if(!showOnlyDiff) {
+                result.push({
+                    name: src.name,
+                    src,
+                    dest,
+                })
+            }
         })
-        return result
+        return {
+            diffCnt,
+            result
+        }
     })     
 
     vm$ = this.select(
@@ -83,7 +101,8 @@ export class DbCompareListStore extends ComponentStore<DbCompareListState> {
             // sourceData,
             // destData
             query,
-            result
+            result: result.result,
+            diffCnt: result.diffCnt
         })
     )
 
@@ -91,7 +110,18 @@ export class DbCompareListStore extends ComponentStore<DbCompareListState> {
         ...s,
         query,
     }))
-    
+    toggleShowOnly = this.updater((s) => ({
+        ...s,
+        showOnlyDiff: !s.showOnlyDiff
+    }))
+    updateDest = this.updater((s, formId: string) => {
+        const dest = s.sourceData.find(src=>src.id === formId)
+        return {
+            ...s,
+            destData: [...s.destData.filter(s=>s.name !== dest?.name), dest] as FormLayout[]
+        }
+    })
+
     loadSourceDataEffect = this.effect<void>($ => $.pipe(
         tap($ => {this.patchState({ loading: true })}),
         switchMap($ => this.http.get(this.sourceDataUrl).pipe(
@@ -138,7 +168,7 @@ export class DbCompareListStore extends ComponentStore<DbCompareListState> {
         switchMap(recordId => this.http.post(this.destUpdateUrl, { recordId }).pipe(
             tapResponse(
                 (resp: any) => {
-                    console.log({resp});
+                    this.updateDest(recordId)
                     window.alert('successfully updated.')
                 },
                 (error) => {

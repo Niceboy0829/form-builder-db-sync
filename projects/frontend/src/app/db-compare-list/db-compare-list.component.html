@@ -1,12 +1,24 @@
 <h1 class="text-5xl font-bold text-center my-10">DB Compare</h1>
+<div class="flex justify-around">
+    <div class="text-center">
+        <a routerLink="/source-db-settings" class="inline-block mr-5 text-blue-600" >Source DB Setting</a>
+        <a routerLink="/dest-db-settings"  class="inline-block mx-5">Dest DB Setting</a>
+    </div>
+    <div class="text-center">
+        <input type="checkbox" (change)="toggleDiff()" id="toggle-view"><label for="toggle-view"> Show Only Differences </label>
+    </div>
+</div>
 <ng-container *ngIf="vm$ | async as vm">
     
     <div *ngIf="vm.loading; else ResultContent" class="text-center">
         Loading...
     </div>
     <ng-template #ResultContent>
-
-        <div class="p-10 w-2/3 mx-auto">
+        <div class="text-center">
+            <h2 *ngIf="vm.diffCnt > 0">There are {{vm.diffCnt}} differences.</h2>
+            <h2 *ngIf="vm.diffCnt === 0">There are no differences.</h2>
+        </div>
+        <div class="p-5 w-2/3 mx-auto">
             <div class="pb-3">
                 <!-- <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last name</label> -->
                 <input type="text" id="query" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="enter the form name to search..."  [value]="vm.query" (change)="didChangeQuery($event)" >

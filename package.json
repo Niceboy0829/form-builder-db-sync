@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "api": "nodemon ./projects/api/index.js --watch ./projects/api/*",
+    "dev:api": "nodemon ./projects/api/index.js --watch ./projects/api/*",
+    "api": "node ./projects/api/index.js",
     "frontend": "ng serve --project frontend",
     "build": "ng build",
     "build:frontend": "ng build --project frontend",

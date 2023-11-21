@@ -2,6 +2,8 @@ import { ComponentStore, tapResponse } from '@ngrx/component-store';
 import { Injectable } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
 import { switchMap, tap, withLatestFrom } from 'rxjs';
+import { API_BASE_URI } from '../../config';
+import { Router } from '@angular/router';
 
 export interface SettingsFormState {
     loading: boolean,
@@ -29,6 +31,7 @@ export class SettingsFormStore extends ComponentStore<SettingsFormState> {
 
     constructor(
         private http: HttpClient,
+        private router: Router
     ) {
         super({
             query: '',
@@ -86,7 +89,7 @@ export class SettingsFormStore extends ComponentStore<SettingsFormState> {
         withLatestFrom(
             this.type$,
         ),
-        switchMap(([, type]) => this.http.get(`http://localhost:3000/api/db-settings/${type}`).pipe(
+        switchMap(([, type]) => this.http.get(`${API_BASE_URI}/db-settings/${type}`).pipe(
             tapResponse(
                 (data: any) => {
                     this.patchState({data})
@@ -108,7 +111,7 @@ export class SettingsFormStore extends ComponentStore<SettingsFormState> {
         withLatestFrom(
             this.type$,
         ),
-        switchMap(([input, type]) => this.http.post(`http://localhost:3000/api/db-settings/${type}`, {...input}).pipe(
+        switchMap(([input, type]) => this.http.post(`${API_BASE_URI}/db-settings/${type}`, {...input}).pipe(
             tapResponse(
                 (data: any) => {
                     console.log(data)
@@ -116,6 +119,12 @@ export class SettingsFormStore extends ComponentStore<SettingsFormState> {
                         message: 'Successfully saved.',
                         error: false,
                     })
+                    console.log(type)
+                    if(type === 'source') {
+                        this.router.navigate(["/dest-db-settings"])
+                    }else if(type==='dest') {
+                        this.router.navigate(["/db-compare"])
+                    }
                     // this.patchState({ data })
                 },
                 (error: any) => {
@@ -136,7 +145,7 @@ export class SettingsFormStore extends ComponentStore<SettingsFormState> {
         withLatestFrom(
             this.type$,
         ),
-        switchMap(([, type]) => this.http.get(`http://localhost:3000/api/db-settings/test/${type}`).pipe(
+        switchMap(([, type]) => this.http.get(`${API_BASE_URI}/db-settings/test/${type}`).pipe(
             tapResponse(
                 (data: any) => {
                     window.alert("success!!!")

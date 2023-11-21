@@ -1,0 +1,28 @@
+{
+    "sourceDBConfig": {
+        "user": "sa",
+        "password": "123456",
+        "server": "192.168.148.42",
+        "database": "case-clinical-underwriting",
+        "port": 1433,
+        "encrypt": false,
+        "trustServerCertificate": true,
+        "dialect": "mssql",
+        "dialectOptions": {
+            "instanceName": "SQLEXPRESS"
+        }
+    },
+    "destDBConfig": {
+        "user": "sa",
+        "password": "123456",
+        "server": "localhost",
+        "database": "case-clinical-underwriting",
+        "port": 1433,
+        "encrypt": false,
+        "trustServerCertificate": true,
+        "dialect": "mssql",
+        "dialectOptions": {
+            "instanceName": "MSSQLSERVER"
+        }
+    }
+}

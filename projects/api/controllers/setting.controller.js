@@ -1,4 +1,8 @@
+const fs = require("fs")
+const path = require('path')
 const { closeAll, get } = require("../db-pool")
+
+const filePath = path.join(__dirname, '../config/config.json');
 
 const getDBSettings = (req, res) => {
     const { type } = req.params;
@@ -18,14 +22,34 @@ const setDBSettings = async (req, res) => {
     const { type } = req.params;
 
     if(type === 'source') {
-        global.sourceDBConfig = req.body
+        global.sourceDBConfig = req.body;
+
+        const config = {
+            sourceDBConfig,
+            destDBConfig
+        }
+
+        const fileDescriptor = fs.openSync(filePath, 'w');
+        fs.writeSync(fileDescriptor, JSON.stringify(config, null, 4), 'utf8');
+        fs.closeSync(fileDescriptor);
+
         await closeAll();
         res.send({
             success: true
         })
     } else if(type === 'dest') {
         global.destDBConfig = req.body
-        await closeAll('dest')
+        
+        const config = {
+            sourceDBConfig,
+            destDBConfig
+        }
+
+        const fileDescriptor = fs.openSync(filePath, 'w');
+        fs.writeSync(fileDescriptor, JSON.stringify(config, null, 4), 'utf8');
+        fs.closeSync(fileDescriptor);
+
+        await closeAll()
         res.send({
             success: true
         })
