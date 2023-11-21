@@ -35,17 +35,14 @@ export class DbCompareListComponent {
     let leftLines = data.src.config ? JSON.parse(data.src.config) : undefined
     let rightLines = data.dest?.config ? JSON.parse(data.dest.config)  : undefined
     
-    if(leftLines) {
-      leftLines.schema = leftLines?.schema ? JSON.parse(leftLines.schema): undefined
-      leftLines = JSON.stringify(leftLines, null, 4)
-    }
-    if(rightLines) {
-      rightLines.schema = rightLines?.schema ? JSON.parse(rightLines.schema) : undefined
-      rightLines = JSON.stringify(rightLines, null, 4)
-    }
-
-
-    console.log(leftLines)
+    // if(leftLines) {
+    //   leftLines.schema = leftLines?.schema ? JSON.parse(leftLines.schema): undefined
+    //   leftLines = JSON.stringify(leftLines, null, 4)
+    // }
+    // if(rightLines) {
+    //   rightLines.schema = rightLines?.schema ? JSON.parse(rightLines.schema) : undefined
+    //   rightLines = JSON.stringify(rightLines, null, 4)
+    // }
 
     const diffModalRef = this.dialog.open(DiffModalComponent, {
       width: '100%',

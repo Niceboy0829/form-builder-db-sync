@@ -17,7 +17,6 @@
                         <th scope="col">name</th>
                         <th scope="col">Exists in Dest</th>
                         <th scope="col">Different</th>
-                        <th scope="col">View</th>
                         <th scope="col">src active</th>
                         <th scope="col">dst active</th>
                         <th scope="col">action</th>
@@ -27,8 +26,7 @@
                     <tr *ngFor="let item of vm.result"  class="bg-white hover:bg-gray-100 border-b cursor-pointer dark:bg-gray-800 dark:border-gray-700" [ngClass]="{'bg-red-200 color-white': item.src.config === item.dest?.config}">
                         <td>{{item.src?.name}}</td>
                         <td [ngClass]="{'bg-red-500 text-white': !item.dest}">{{!!item.dest ? 'Exists' : 'Not Exists'}}</td>
-                        <td [ngClass]="{'bg-orange-500 text-white': item.dest?.config!==item.src.config}">{{(item.dest?.config===item.src.config && !!item.dest) ? 'Same' : 'Different'}}</td>
-                        <td><button type="button" (click)="openDiffViewModal(item)">View</button></td>
+                        <td [ngClass]="{'bg-orange-500 text-white': item.dest?.config!==item.src.config}"><button type="button" class="w-full" (click)="openDiffViewModal(item)">{{(item.dest?.config===item.src.config && !!item.dest) ? 'Same' : 'Different'}}</button></td>
                         <td>{{item.src?.active}}</td>
                         <td>{{item.dest?.active}}</td>
                         <td><button type="button" (click)="didButtonClick(item)"> -> </button></td>

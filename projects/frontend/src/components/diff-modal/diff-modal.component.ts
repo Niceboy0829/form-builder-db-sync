@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { diff_match_patch } from 'diff-match-patch';
 
 const options = {
-  editCost: 4,
+  editCost: 1,
   interLineDiff: true,
   ignoreTrailingNewLines: true,
   attrs: {
@@ -23,6 +23,7 @@ const options = {
 const DIFF_INSERT = 1
 const DIFF_DELETE = -1
 const LINEDIFF = 1;
+const INSDEL = 0
 
 export interface DialogData {
   name: string,
@@ -47,12 +48,6 @@ export class DiffModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // const dmp = new diff_match_patch();
-    // const diffs = dmp.diff_main(this.data.leftLines, this.data.rightLines);
-    // dmp.diff_cleanupSemantic(diffs);
-    // this.diffHtml = dmp.diff_prettyHtml(diffs);
-
-    // console.log(this.diffHtml);
     this.diffHtml = this.createLineDiffHtml( this.data.leftLines, this.data.rightLines, options )
   }
 
@@ -66,17 +61,14 @@ export class DiffModalComponent implements OnInit {
     diffs = dmp.diff_main(chars.chars1, chars.chars2, false);
     console.log(chars, diffs)
     this.charsToLines(diffs, chars.lineArray, ignoreTrailingNewLines);
-    return this.createHtmlFromDiffs(diffs, 0, options);
+    return this.createHtmlFromDiffs(diffs, INSDEL, options);
 
   }
-
-
 
   // Taken from source https://code.google.com/p/google-diff-match-patch/
   // and then modified for style and to strip newline
   linesToChars = (text1: string, text2: string, ignoreTrailingNewLines: boolean) => {
     const lineArray = [];
-    const lineHash = {};
     lineArray[0] = '';
 
     const linesToCharsMunge = (text: string) => {
