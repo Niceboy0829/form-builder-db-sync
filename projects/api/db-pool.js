@@ -1,5 +1,5 @@
 const mssql = require('mssql')
-const pools = new Map();
+// const pools = new Map();
 
 module.exports = {
     /**
@@ -12,27 +12,29 @@ module.exports = {
      * @return {Promise.<mssql.ConnectionPool>}
      */
     get: (name, config) => {
-        if (!pools.has(name)) {
+        if (!dbConnectionPools.has(name)) {
             if (!config) {
                 throw new Error('Pool does not exist');
             }
+            console.log("get connection", config)
+
             const pool = new mssql.ConnectionPool(config);
             // automatically remove the pool from the cache if `pool.close()` is called
             const close = pool.close.bind(pool);
             pool.close = (...args) => {
-                pools.delete(name);
+                dbConnectionPools.delete(name);
                 return close(...args);
             }
-            pools.set(name, pool.connect());
+            dbConnectionPools.set(name, pool.connect());
         }
-        return pools.get(name);
+        return dbConnectionPools.get(name);
     },
     /**
      * Closes all the pools and removes them from the store
      *
      * @return {Promise<mssql.ConnectionPool[]>}
      */
-    closeAll: () => Promise.all(Array.from(pools.values()).map((connect) => {
-        return connect.then((pool) => pool.close());
+    closeAll: () => Promise.all(Array.from(dbConnectionPools.entries()).map(([name, connect]) => {
+        return connect.then((pool) => pool.close()).catch(error => { dbConnectionPools.delete(name); });
     })),
 };

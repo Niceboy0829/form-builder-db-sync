@@ -6,12 +6,17 @@ import { AppComponent } from './app.component';
 import { DbCompareListComponent } from './db-compare-list/db-compare-list.component';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon'
-import { MatButtonModule } from '@angular/material/button'
+import { MatButtonModule } from '@angular/material/button';
+import { SourcedbSettingsComponent } from './sourcedb.settings/sourcedb.settings.component';
+import { DestdbSettingsComponent } from './destdb.settings/destdb.settings.component'
+import { SettingsFormModule } from '../components/settings-form/settings-form.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    DbCompareListComponent
+    DbCompareListComponent,
+    SourcedbSettingsComponent,
+    DestdbSettingsComponent
   ],
   imports: [
     CommonModule,
@@ -20,6 +25,7 @@ import { MatButtonModule } from '@angular/material/button'
     HttpClientModule,
     MatIconModule,
     MatButtonModule,
+    SettingsFormModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

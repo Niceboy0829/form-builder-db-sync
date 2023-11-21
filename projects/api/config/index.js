@@ -1,9 +1,10 @@
 const sourceDBConfig = {  // local db
-    user: 'sa',
-    password: '123456',
+    user: '',
+    password: '',
     server: '192.168.148.42',
     database: 'case-clinical-underwriting',
     port: 1433,
+    encrypt: false,
     trustServerCertificate: true,
     dialect: "mssql",
     dialectOptions: {
@@ -12,11 +13,12 @@ const sourceDBConfig = {  // local db
 }
 
 const destDBConfig = {    // real db
-    user: 'sa',
-    password: '123456',
+    user: '',
+    password: '',
     server: 'localhost', // SELECT @@SERVERNAME;
     database: 'case-clinical-underwriting',
     port: 1433,
+    encrypt: false,
     trustServerCertificate: true,
     dialect: "mssql",
     dialectOptions: {

@@ -1,11 +1,9 @@
-const mssql = require('mssql');
-const Config = require('../config')
 const { get } = require('../db-pool');
 const cuid = require('cuid')
 const testExample = async (req, res) => {
     try {
-        const source = await get('source', Config.sourceDBConfig)
-        const dest = await get('dest', Config.destDBConfig)
+        const source = await get('source', sourceDBConfig)
+        const dest = await get('dest', destDBConfig)
     
         const tablesSource = await source.request().query('SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES');
         const tablesDest = await dest.request().query('SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES');
@@ -14,13 +12,12 @@ const testExample = async (req, res) => {
         console.log(err)
         res.status(500).send(err)
     }
-
 }
 
 const getSourceDBData = async (req, res) => {
     console.log("get source data")
     try {
-        const source = await get('source', Config.sourceDBConfig)
+        const source = await get('source', sourceDBConfig)
     
         const sourceData = await source.request().query('SELECT * FROM FormLayout WHERE active IS NULL or active = 1');
         res.send(sourceData);
@@ -33,7 +30,7 @@ const getSourceDBData = async (req, res) => {
 const getDestDBData = async (req, res) => {
     console.log("get dest data")
     try {
-        const dest = await get('dest', Config.destDBConfig)
+        const dest = await get('dest', destDBConfig)
     
         const destData = await dest.request().query('SELECT * FROM FormLayout WHERE active IS NULL or active = 1');
         res.send(destData);
@@ -45,10 +42,9 @@ const getDestDBData = async (req, res) => {
 
 const updateDestData = async (req, res) => {
     const { recordId } = req.body;
-    console.log(recordId)
     try {
-        const source = await get('source', Config.sourceDBConfig)
-        const dest = await get('dest', Config.destDBConfig)
+        const source = await get('source', sourceDBConfig)
+        const dest = await get('dest', destDBConfig)
         
         const sourceResult = await source.request().query(`SELECT * FROM FormLayout WHERE id='${recordId}';`);
         const sourceData = sourceResult.recordset[0]
@@ -62,7 +58,7 @@ const updateDestData = async (req, res) => {
         if( active !== 0 ) {
             updatedData = dest.request().query(`UPDATE FormLayout SET active=0 WHERE name='${name}';`);
         }
-        
+
         const sql = `INSERT INTO FormLayout (id, createdAt, updatedAt, name, config, type, previewImage, testData, parentId, title, modelData, isModal, active) 
             VALUES(@id, @createdAt, @updatedAt, @name, @config, @type, @previewImage, @testData, @parentId, @title, @modelData, @isModal, @active);`;
         
