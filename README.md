@@ -1,18 +1,42 @@
 ID System for ui compare between different databases
 
-copy test.env and rename .env 
+Copy test.env and rename .env 
 
-set API PORT number
+Set API PORT number
 
 
 ```bash
 npm i
 npm run build --project frontend
 ```
-copy and paste the content of `dist/frontend` folder into `projects/api/public` folder.
+Copy and paste the content of `dist/frontend` folder into `projects/api/public` folder.
 
 ```
 npm run api
 ```
 
-visit localhost:3030 on your browser
+Visit `http://localhost:3030` on your browser.
+
+
+## Prerequest
+### To development
+
+in file - `project/frontent/src/config/index.ts`, set API_BASE_URL as `'http://localhost:3030/api'`.
+
+the file content like following.
+
+```typescript
+export const API_BASE_URI: string = 'http://localhost:3030/api'
+// export const API_BASE_URI: string = '/api'
+```
+
+### To build
+
+in file - `project/frontent/src/config/index.ts`, set API_BASE_URL as `'/api'`.
+
+the file content like following.
+
+```typescript
+// export const API_BASE_URI: string = 'http://localhost:3030/api'
+export const API_BASE_URI: string = '/api'
+```
