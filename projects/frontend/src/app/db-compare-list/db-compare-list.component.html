@@ -5,7 +5,7 @@
         <a routerLink="/dest-db-settings"  class="inline-block mx-5">Dest DB Setting</a>
     </div>
     <div class="text-center">
-        <input type="checkbox" (change)="toggleDiff()" id="toggle-view"><label for="toggle-view"> Show Only Differences </label>
+        <input type="checkbox" checked="true" (change)="toggleDiff()" id="toggle-view"><label for="toggle-view"> Show Only Differences </label>
     </div>
 </div>
 <ng-container *ngIf="vm$ | async as vm">
@@ -27,6 +27,9 @@
                 <thead>
                     <tr>
                         <th scope="col">name</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Source Updated</th>
+                        <th scope="col">Target Updated</th>
                         <th scope="col">Exists in Dest</th>
                         <th scope="col">Different</th>
                         <th scope="col">src active</th>
@@ -37,6 +40,9 @@
                 <tbody>
                     <tr *ngFor="let item of vm.result"  class="bg-white hover:bg-gray-100 border-b cursor-pointer dark:bg-gray-800 dark:border-gray-700" [ngClass]="{'bg-red-200 color-white': item.src.config === item.dest?.config}">
                         <td>{{item.src?.name}}</td>
+                        <td>{{item.src?.type}}</td>
+                        <td>{{item.src?.updatedAt | date:"short"}}</td>
+                        <td>{{item.dest?.updatedAt | date:"short"}}</td>
                         <td [ngClass]="{'bg-red-500 text-white': !item.dest}">{{!!item.dest ? 'Exists' : 'Not Exists'}}</td>
                         <td [ngClass]="{'bg-orange-500 text-white': item.dest?.config!==item.src.config}"><button type="button" class="w-full" (click)="openDiffViewModal(item)">{{(item.dest?.config===item.src.config && !!item.dest) ? 'Same' : 'Different'}}</button></td>
                         <td>{{item.src?.active}}</td>

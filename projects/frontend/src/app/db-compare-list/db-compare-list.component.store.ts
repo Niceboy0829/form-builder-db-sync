@@ -41,7 +41,7 @@ export class DbCompareListStore extends ComponentStore<DbCompareListState> {
         super({
             query: '',
             loading: false,
-            showOnlyDiff: false,
+            showOnlyDiff: true,
             sourceData: [],
             destData: [],
         })
@@ -101,7 +101,7 @@ export class DbCompareListStore extends ComponentStore<DbCompareListState> {
             // sourceData,
             // destData
             query,
-            result: result.result,
+            result: result.result?.sort((a, b) => - (a.src?.updatedAt ? Date.parse(a.src.updatedAt) : 0) + (b.src?.updatedAt ? Date.parse(b.src.updatedAt) : 0)),
             diffCnt: result.diffCnt
         })
     )
