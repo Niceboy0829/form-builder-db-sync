@@ -32,11 +32,15 @@ export const API_BASE_URI: string = 'http://localhost:3030/api'
 
 ### To build
 
-in file - `project/frontent/src/config/index.ts`, set API_BASE_URL as `'/api'`.
+In file - `project/frontent/src/config/index.ts`, set API_BASE_URL as `'/api'`.
 
-the file content like following.
+The file content like following.
 
 ```typescript
 // export const API_BASE_URI: string = 'http://localhost:3030/api'
 export const API_BASE_URI: string = '/api'
 ```
+
+Thank you.
+
+From Tat.Ming
