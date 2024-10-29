@@ -4,8 +4,8 @@
   "scripts": {
     "ng": "ng",
     "dev:api": "nodemon ./projects/api/index.js --watch ./projects/api/*",
-    "api": "node ./projects/api/index.js",
-    "frontend": "ng serve --project frontend",
+    "api": "node ./projects/api/index.js --host 0.0.0.0",
+    "frontend": "ng serve --project frontend --host 0.0.0.0",
     "build": "ng build",
     "build:frontend": "ng build --project frontend",
     "watch": "ng build --watch --configuration development",

@@ -26,7 +26,7 @@ global.destDBConfig = Config.destDBConfig;
 
 global.dbConnectionPools = new Map()
 
-const port = process.env.API_PORT;
+const port = process.env.API_PORT || 3030;
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
