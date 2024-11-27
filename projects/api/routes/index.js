@@ -12,6 +12,7 @@ Router.get('/test', dbCompareController.testExample)
 Router.get('/source-data', dbCompareController.getSourceDBData)
 Router.get('/dest-data', dbCompareController.getDestDBData)
 Router.post('/update-dest-data', dbCompareController.updateDestData)
+Router.post('/update-source-data', dbCompareController.updateSrcData)
 
 Router.get('/db-settings/test/:type', settingsController.testConnection)
 Router.get('/db-settings/:type', settingsController.getDBSettings)

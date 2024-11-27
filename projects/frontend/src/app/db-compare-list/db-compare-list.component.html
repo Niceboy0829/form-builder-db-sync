@@ -28,9 +28,10 @@
                     <tr>
                         <th scope="col">name</th>
                         <th scope="col">Type</th>
-                        <th scope="col">Source Updated</th>
-                        <th scope="col">Target Updated</th>
-                        <th scope="col">Exists in Dest</th>
+                        <th scope="col">Remote Updated</th>
+                        <th scope="col">Local Updated</th>
+                        <th scope="col">Remote</th>
+                        <th scope="col">Local</th>
                         <th scope="col">Different</th>
                         <th scope="col">src active</th>
                         <th scope="col">dst active</th>
@@ -38,16 +39,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let item of vm.result"  class="bg-white hover:bg-gray-100 border-b cursor-pointer dark:bg-gray-800 dark:border-gray-700" [ngClass]="{'bg-red-200 color-white': item.src.config === item.dest?.config}">
-                        <td>{{item.src?.name}}</td>
-                        <td>{{item.src?.type}}</td>
+                    <tr *ngFor="let item of vm.result"  class="bg-white hover:bg-gray-100 border-b cursor-pointer dark:bg-gray-800 dark:border-gray-700" [ngClass]="{'bg-red-200 color-white': item.src?.config === item.dest?.config}">
+                        <td>{{item.name}}</td>
+                        <td>{{item.src?.type ?? item.dest?.type}}</td>
                         <td>{{item.src?.updatedAt | date:"short"}}</td>
                         <td>{{item.dest?.updatedAt | date:"short"}}</td>
+                        <td [ngClass]="{'bg-red-500 text-white': !item.src}">{{!!item.src ? 'Exists' : 'Not Exists'}}</td>
                         <td [ngClass]="{'bg-red-500 text-white': !item.dest}">{{!!item.dest ? 'Exists' : 'Not Exists'}}</td>
-                        <td [ngClass]="{'bg-orange-500 text-white': item.dest?.config!==item.src.config}"><button type="button" class="w-full" (click)="openDiffViewModal(item)">{{(item.dest?.config===item.src.config && !!item.dest) ? 'Same' : 'Different'}}</button></td>
+                        <td [ngClass]="{'bg-orange-500 text-white': item.dest?.config!==item.src?.config}"><button type="button" class="w-full" (click)="openDiffViewModal(item)">{{(item.dest?.config===item.src?.config && !!item.dest) ? 'Same' : 'Different'}}</button></td>
                         <td>{{item.src?.active}}</td>
                         <td>{{item.dest?.active}}</td>
-                        <td><button type="button" (click)="didButtonClick(item)"> -> </button></td>
+                        <td><button type="button" (click)="didSrc2DestButtonClick(item)"> remote->local </button></td>
+                        <td><button type="button" (click)="didDest2SrcButtonClick(item)"> local->remote </button></td>
                     </tr>
                 </tbody>
             </table>

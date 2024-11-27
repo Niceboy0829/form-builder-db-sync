@@ -34,6 +34,7 @@ export class DbCompareListStore extends ComponentStore<DbCompareListState> {
     destDataUrl = `${API_BASE_URI}/dest-data`;
 
     destUpdateUrl = `${API_BASE_URI}/update-dest-data`;
+    srcUpdateUrl = `${API_BASE_URI}/update-source-data`;
 
     constructor(
         private http: HttpClient
@@ -78,6 +79,21 @@ export class DbCompareListStore extends ComponentStore<DbCompareListState> {
                 })
             }
         })
+        console.log("source", sourceData)
+        destData.filter(dest=>dest.name?.includes(query)).forEach(dest => {
+            const src = sourceData.find(s => s.name === dest.name)
+            if(!src) {
+                diffCnt++
+                result.push({
+                    name: dest.name,
+                    src: null,
+                    dest: dest
+                })
+            }
+        })
+        
+        console.log("result", result)
+
         return {
             diffCnt,
             result
@@ -119,6 +135,13 @@ export class DbCompareListStore extends ComponentStore<DbCompareListState> {
         return {
             ...s,
             destData: [...s.destData.filter(s=>s.name !== dest?.name), dest] as FormLayout[]
+        }
+    })
+    updateSrc = this.updater((s, formId: string) => {
+        const src = s.destData.find(src=>src.id === formId)
+        return {
+            ...s,
+            sourceData: [...s.sourceData.filter(s=>s.name !== src?.name), src] as FormLayout[]
         }
     })
 
@@ -169,6 +192,20 @@ export class DbCompareListStore extends ComponentStore<DbCompareListState> {
             tapResponse(
                 (resp: any) => {
                     this.updateDest(recordId)
+                    window.alert('successfully updated.')
+                },
+                (error) => {
+                    console.log(error)
+                }
+            )
+        ))
+    ))
+
+    updateSrcDataEffect = this.effect<string>(recordId$ => recordId$.pipe(
+        switchMap(recordId => this.http.post(this.srcUpdateUrl, { recordId }).pipe(
+            tapResponse(
+                (resp: any) => {
+                    this.updateSrc(recordId)
                     window.alert('successfully updated.')
                 },
                 (error) => {

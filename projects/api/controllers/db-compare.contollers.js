@@ -91,9 +91,61 @@ const updateDestData = async (req, res) => {
     }
 }
 
+const updateSrcData = async (req, res) => {
+    const { recordId } = req.body;
+    try {
+        const dest = await get('dest', destDBConfig)
+        const source = await get('source', sourceDBConfig)
+        
+        const destResult = await dest.request().query(`SELECT * FROM FormLayout WHERE id='${recordId}';`);
+        const destData = destResult.recordset[0]
+        if(!destData) {
+            return res.status(400).send("Invalid Record Id")
+        }
+
+        const {name, config, type, previewImage, testData, order, parentId, title, modelData, isModal, active} = destData;
+
+        let updatedData;
+        if( active !== 0 ) {
+            updatedData = source.request().query(`UPDATE FormLayout SET active=0 WHERE name='${name}';`);
+        }
+
+        const sql = `INSERT INTO FormLayout (id, createdAt, updatedAt, name, config, type, previewImage, testData, parentId, title, modelData, isModal, active) 
+            VALUES(@id, @createdAt, @updatedAt, @name, @config, @type, @previewImage, @testData, @parentId, @title, @modelData, @isModal, @active);`;
+        
+        const newId = cuid();
+
+        const insertRequest = source.request();
+        insertRequest.input('id', newId);
+        insertRequest.input('createdAt', new Date());
+        insertRequest.input('updatedAt', new Date());
+        insertRequest.input('name', name);
+        insertRequest.input('config', config);
+        insertRequest.input('type', type);
+        insertRequest.input('previewImage', previewImage);
+        insertRequest.input('testData', testData);
+        // insertRequest.input('order', order);
+        insertRequest.input('parentId', parentId);
+        insertRequest.input('title', title);
+        insertRequest.input('modelData', modelData);
+        insertRequest.input('isModal', isModal);
+        insertRequest.input('active', active !== 0);
+
+        const insertedData = insertRequest.query(sql)
+
+        res.send( {
+            destResult, updatedData, insertedData
+        } )
+    } catch(err) {
+        console.log(err)
+        res.status(500).send(err)
+    }
+}
+
 module.exports = {
     testExample,
     getSourceDBData,
     getDestDBData,
-    updateDestData
+    updateDestData,
+    updateSrcData,
 }

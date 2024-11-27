@@ -28,8 +28,12 @@ export class DbCompareListComponent {
     this.store.setQuery($event.target.value);
   }
   
-  didButtonClick(resultItem: any) {
+  didSrc2DestButtonClick(resultItem: any) {
     this.store.updateDestDataEffect(resultItem.src.id);
+  }
+  
+  didDest2SrcButtonClick(resultItem: any) {
+    this.store.updateSrcDataEffect(resultItem.dest.id);
   }
 
   toggleDiff() {
